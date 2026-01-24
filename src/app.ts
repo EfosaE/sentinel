@@ -1,52 +1,15 @@
-// import express from "express";
-import { FraudStateType } from "./utils/state.js";
-import { fraudAgent } from "./agent.js";
-import { TransactionEvent } from "./types/schema.js";
+import express from "express";
 
-// const app = express();
-// const port = "3000";
+import transactionRouter from "../routes/transactions.route.js";
 
-// Example high-risk transaction
-export const exampleHighRiskTransaction: TransactionEvent = {
-  id: "txn_123456",
-  amount: 450000, // Just below structuring threshold
-  currency: "NGN",
-  timestamp: new Date("2026-01-21T23:30:00Z").toISOString(),
-  userId: "user_abc",
-  accountAge: 3,
-  recipientId: "recipient_xyz",
-  recipientNew: true,
-  transactionType: "TRANSFER",
-  channel: "MOBILE",
-  location: {
-    state: "Lagos",
-    country: "NG",
-    ipAddress: "102.89.32.10",
-  },
-  deviceFingerprint: "device_fingerprint_123",
-  userHistory: {
-    avgTransactionAmount: 50000,
-    totalTransactions: 15,
-    failedTransactionsLast24h: 4,
-    dailyTransactionCount: 6,
-    dailyTransactionVolume: 2500000,
-  },
-  kycTier: "TIER_1",
-  bvnVerified: false,
-};
+const app = express();
+app.use(express.json());
+const port = "3000";
 
-// Test with an urgent billing issue
-const initialState: FraudStateType = {
-  transaction: exampleHighRiskTransaction,
-  riskScore: 0,
-  ruleFlags: [],
-};
+// ...existing code...
 
-// Run with a thread_id for persistence
-const config = { configurable: { thread_id: "customer_123" } };
-const result = await fraudAgent.invoke(initialState, config);
-console.log(result);
+app.use("/api/v1/transactions", transactionRouter);
 
-// app.listen(port, () => {
-//   console.log(`Example app listening on port ${port}`);
-// });
+app.listen(port, () => {
+  console.log(`Sentinel listening on port ${port}`);
+});
